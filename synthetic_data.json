@@ -1,0 +1,500 @@
+{
+  "events": [
+    {
+      "event_id": "4970",
+      "timestamp": "2025-09-12T07:44:47.380783Z",
+      "urge": {
+        "outcome": "resisted",
+        "feeling": "neutral",
+        "intensity": 4
+      },
+      "streak": {
+        "current_streak_days": 4,
+        "longest_streak_days": 12
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4971",
+      "timestamp": "2025-08-28T18:44:47.380790Z",
+      "urge": {
+        "outcome": "relapsed",
+        "feeling": "bored",
+        "intensity": 2
+      },
+      "streak": {
+        "current_streak_days": 0,
+        "longest_streak_days": 40
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4972",
+      "timestamp": "2025-09-10T11:44:47.380796Z",
+      "urge": {
+        "outcome": "resisted",
+        "feeling": "neutral",
+        "intensity": 2
+      },
+      "streak": {
+        "current_streak_days": 20,
+        "longest_streak_days": 34
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4973",
+      "timestamp": "2025-09-18T20:44:47.380802Z",
+      "urge": {
+        "outcome": "resisted",
+        "feeling": "bored",
+        "intensity": 3
+      },
+      "streak": {
+        "current_streak_days": 3,
+        "longest_streak_days": 74
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4974",
+      "timestamp": "2025-08-30T02:44:47.380812Z",
+      "urge": {
+        "outcome": "resisted",
+        "feeling": "neutral",
+        "intensity": 3
+      },
+      "streak": {
+        "current_streak_days": 6,
+        "longest_streak_days": 89
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4975",
+      "timestamp": "2025-09-17T08:44:47.380820Z",
+      "urge": {
+        "outcome": "resisted",
+        "feeling": "bored",
+        "intensity": 3
+      },
+      "streak": {
+        "current_streak_days": 27,
+        "longest_streak_days": 53
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4976",
+      "timestamp": "2025-09-20T23:44:47.380826Z",
+      "urge": {
+        "outcome": "resisted",
+        "feeling": "neutral",
+        "intensity": 3
+      },
+      "streak": {
+        "current_streak_days": 9,
+        "longest_streak_days": 99
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4977",
+      "timestamp": "2025-08-31T18:44:47.380833Z",
+      "urge": {
+        "outcome": "resisted",
+        "feeling": "bored",
+        "intensity": 2
+      },
+      "streak": {
+        "current_streak_days": 25,
+        "longest_streak_days": 36
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4978",
+      "timestamp": "2025-09-20T00:44:47.380840Z",
+      "urge": {
+        "outcome": "relapsed",
+        "feeling": "fatigued",
+        "intensity": 2
+      },
+      "streak": {
+        "current_streak_days": 0,
+        "longest_streak_days": 90
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4979",
+      "timestamp": "2025-08-27T06:44:47.380846Z",
+      "urge": {
+        "outcome": "relapsed",
+        "feeling": "fatigued",
+        "intensity": 2
+      },
+      "streak": {
+        "current_streak_days": 0,
+        "longest_streak_days": 92
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4980",
+      "timestamp": "2025-09-12T18:44:47.380852Z",
+      "urge": {
+        "outcome": "resisted",
+        "feeling": "bored",
+        "intensity": 4
+      },
+      "streak": {
+        "current_streak_days": 42,
+        "longest_streak_days": 56
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4981",
+      "timestamp": "2025-09-15T12:44:47.380859Z",
+      "urge": {
+        "outcome": "relapsed",
+        "feeling": "neutral",
+        "intensity": 2
+      },
+      "streak": {
+        "current_streak_days": 0,
+        "longest_streak_days": 66
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4982",
+      "timestamp": "2025-09-04T15:44:47.380866Z",
+      "urge": {
+        "outcome": "relapsed",
+        "feeling": "bored",
+        "intensity": 2
+      },
+      "streak": {
+        "current_streak_days": 0,
+        "longest_streak_days": 93
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4983",
+      "timestamp": "2025-09-20T14:44:47.380872Z",
+      "urge": {
+        "outcome": "resisted",
+        "feeling": "bored",
+        "intensity": 3
+      },
+      "streak": {
+        "current_streak_days": 24,
+        "longest_streak_days": 93
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4984",
+      "timestamp": "2025-08-27T14:44:47.380878Z",
+      "urge": {
+        "outcome": "resisted",
+        "feeling": "bored",
+        "intensity": 2
+      },
+      "streak": {
+        "current_streak_days": 11,
+        "longest_streak_days": 44
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4985",
+      "timestamp": "2025-09-17T01:44:47.380885Z",
+      "urge": {
+        "outcome": "relapsed",
+        "feeling": "neutral",
+        "intensity": 2
+      },
+      "streak": {
+        "current_streak_days": 0,
+        "longest_streak_days": 94
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4986",
+      "timestamp": "2025-09-23T12:44:47.380891Z",
+      "urge": {
+        "outcome": "resisted",
+        "feeling": "fatigued",
+        "intensity": 2
+      },
+      "streak": {
+        "current_streak_days": 9,
+        "longest_streak_days": 100
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4987",
+      "timestamp": "2025-09-13T06:44:47.380898Z",
+      "urge": {
+        "outcome": "resisted",
+        "feeling": "neutral",
+        "intensity": 1
+      },
+      "streak": {
+        "current_streak_days": 23,
+        "longest_streak_days": 87
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4988",
+      "timestamp": "2025-09-08T04:44:47.380905Z",
+      "urge": {
+        "outcome": "relapsed",
+        "feeling": "neutral",
+        "intensity": 1
+      },
+      "streak": {
+        "current_streak_days": 0,
+        "longest_streak_days": 89
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4989",
+      "timestamp": "2025-09-11T10:44:47.380911Z",
+      "urge": {
+        "outcome": "resisted",
+        "feeling": "bored",
+        "intensity": 1
+      },
+      "streak": {
+        "current_streak_days": 40,
+        "longest_streak_days": 80
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4990",
+      "timestamp": "2025-09-25T08:44:47.380919Z",
+      "urge": {
+        "outcome": "resisted",
+        "feeling": "neutral",
+        "intensity": 2
+      },
+      "streak": {
+        "current_streak_days": 4,
+        "longest_streak_days": 15
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4991",
+      "timestamp": "2025-09-19T23:44:47.380927Z",
+      "urge": {
+        "outcome": "resisted",
+        "feeling": "fatigued",
+        "intensity": 2
+      },
+      "streak": {
+        "current_streak_days": 27,
+        "longest_streak_days": 96
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4992",
+      "timestamp": "2025-09-14T02:44:47.380934Z",
+      "urge": {
+        "outcome": "resisted",
+        "feeling": "bored",
+        "intensity": 4
+      },
+      "streak": {
+        "current_streak_days": 17,
+        "longest_streak_days": 95
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4993",
+      "timestamp": "2025-09-03T20:44:47.380940Z",
+      "urge": {
+        "outcome": "resisted",
+        "feeling": "neutral",
+        "intensity": 1
+      },
+      "streak": {
+        "current_streak_days": 47,
+        "longest_streak_days": 61
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4994",
+      "timestamp": "2025-08-27T07:44:47.380947Z",
+      "urge": {
+        "outcome": "resisted",
+        "feeling": "bored",
+        "intensity": 3
+      },
+      "streak": {
+        "current_streak_days": 29,
+        "longest_streak_days": 55
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4995",
+      "timestamp": "2025-09-25T05:44:47.380954Z",
+      "urge": {
+        "outcome": "relapsed",
+        "feeling": "bored",
+        "intensity": 3
+      },
+      "streak": {
+        "current_streak_days": 0,
+        "longest_streak_days": 82
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4996",
+      "timestamp": "2025-09-17T07:44:47.380960Z",
+      "urge": {
+        "outcome": "resisted",
+        "feeling": "neutral",
+        "intensity": 3
+      },
+      "streak": {
+        "current_streak_days": 2,
+        "longest_streak_days": 17
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4997",
+      "timestamp": "2025-09-22T05:44:47.380967Z",
+      "urge": {
+        "outcome": "relapsed",
+        "feeling": "bored",
+        "intensity": 2
+      },
+      "streak": {
+        "current_streak_days": 0,
+        "longest_streak_days": 84
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4998",
+      "timestamp": "2025-09-13T11:44:47.380974Z",
+      "urge": {
+        "outcome": "resisted",
+        "feeling": "fatigued",
+        "intensity": 2
+      },
+      "streak": {
+        "current_streak_days": 18,
+        "longest_streak_days": 62
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "4999",
+      "timestamp": "2025-08-28T03:44:47.380980Z",
+      "urge": {
+        "outcome": "resisted",
+        "feeling": "bored",
+        "intensity": 3
+      },
+      "streak": {
+        "current_streak_days": 21,
+        "longest_streak_days": 79
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    },
+    {
+      "event_id": "5000",
+      "timestamp": "2025-09-04T05:44:47.380987Z",
+      "urge": {
+        "outcome": "resisted",
+        "feeling": "neutral",
+        "intensity": 2
+      },
+      "streak": {
+        "current_streak_days": 15,
+        "longest_streak_days": 58
+      },
+      "meta": {
+        "location_context": "home"
+      }
+    }
+  ]
+}

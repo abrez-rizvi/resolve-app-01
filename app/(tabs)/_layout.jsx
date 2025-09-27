@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Tabs } from 'expo-router';
+import { Tabs, router } from 'expo-router';
 import { useState } from 'react';
 import {
     KeyboardAvoidingView,
@@ -16,6 +16,24 @@ import {
 const Layout = () => {
   // Global Chatbot state
   const [showChatbot, setShowChatbot] = useState(false);
+  
+  // Global Urge Help state
+  const [showUrgeHelpModal, setShowUrgeHelpModal] = useState(false);
+  
+  const dopamineSwapSuggestions = {
+    immediate: [
+      { id: 'breathing', name: 'Deep Breathing', icon: 'lungs', duration: '2 min', color: '#4BB38A' },
+      { id: 'coldwater', name: 'Cold Water Face', icon: 'water', duration: '30 sec', color: '#6C63FF' },
+      { id: 'pushups', name: '10 Push-ups', icon: 'dumbbell', duration: '1 min', color: '#FF9500' },
+      { id: 'music', name: 'Favorite Song', icon: 'music', duration: '3 min', color: '#FF6584' },
+    ],
+    longer: [
+      { id: 'walk', name: 'Quick Walk', icon: 'walk', duration: '10 min', color: '#4BB38A' },
+      { id: 'call', name: 'Call a Friend', icon: 'phone', duration: '15 min', color: '#6C63FF' },
+      { id: 'hobby', name: 'Creative Hobby', icon: 'palette', duration: '30 min', color: '#FF9500' },
+      { id: 'exercise', name: 'Workout', icon: 'dumbbell', duration: '20 min', color: '#FF6584' },
+    ]
+  };
   const [chatMessages, setChatMessages] = useState([
     {
       id: 1,
@@ -144,6 +162,56 @@ const Layout = () => {
           }}
         />
       </Tabs>
+
+      {/* Global Floating Urge Help Button - Part of navbar layout */}
+      <TouchableOpacity
+        style={{
+          position: 'absolute',
+          bottom: 85, // Just above the navbar
+          left: 20,
+          width: 56,
+          height: 56,
+          borderRadius: 28,
+          shadowColor: "#FF6584",
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.3,
+          shadowRadius: 8,
+          elevation: 8,
+          zIndex: 1000,
+        }}
+        onPress={() => setShowUrgeHelpModal(true)}
+      >
+        <LinearGradient
+          colors={["#FF6584", "#FF9500"]}
+          style={{
+            width: 56,
+            height: 56,
+            borderRadius: 28,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <MaterialCommunityIcons name="alert-circle" size={24} color="white" />
+        </LinearGradient>
+        {/* Notification pulse */}
+        <View
+          style={{
+            position: 'absolute',
+            top: -2,
+            right: -2,
+            width: 16,
+            height: 16,
+            backgroundColor: '#FF6584',
+            borderRadius: 8,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Text style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}>!</Text>
+        </View>
+      </TouchableOpacity>
 
       {/* Global Floating Chatbot Button - Part of navbar layout */}
       <TouchableOpacity
@@ -359,6 +427,109 @@ const Layout = () => {
               </View>
             </View>
           </KeyboardAvoidingView>
+        </View>
+      </Modal>
+      
+      {/* Global Urge Help Modal */}
+      <Modal
+        visible={showUrgeHelpModal}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowUrgeHelpModal(false)}
+      >
+        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' }}>
+          <View style={{ backgroundColor: '#1a1a2e', borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, maxHeight: '80%' }}>
+            {/* Header */}
+            <View style={{ alignItems: 'center', marginBottom: 24 }}>
+              <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: 'rgba(255, 101, 132, 0.2)', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
+                <MaterialCommunityIcons name="alert-circle" size={28} color="#FF6584" />
+              </View>
+              <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>I'm Feeling an Urge</Text>
+              <Text style={{ color: '#7a8b99', fontSize: 14, textAlign: 'center', marginTop: 4 }}>
+                Choose your support level
+              </Text>
+            </View>
+            
+            <ScrollView showsVerticalScrollIndicator={false}>
+              {/* Emergency Mode Option */}
+              <TouchableOpacity 
+                style={{ backgroundColor: 'rgba(255, 101, 132, 0.2)', borderColor: 'rgba(255, 101, 132, 0.4)', borderWidth: 1, borderRadius: 16, padding: 16, marginBottom: 16 }}
+                onPress={() => {
+                  setShowUrgeHelpModal(false);
+                  router.push("/(tabs)/EmergencyScreen");
+                }}
+              >
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <View style={{ width: 48, height: 48, borderRadius: 24, backgroundColor: '#FF6584', alignItems: 'center', justifyContent: 'center', marginRight: 16 }}>
+                    <MaterialCommunityIcons name="phone-alert" size={24} color="white" />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ color: 'white', fontSize: 18, fontWeight: 'bold' }}>Emergency Mode</Text>
+                    <Text style={{ color: '#7a8b99', fontSize: 14 }}>Get immediate professional support</Text>
+                  </View>
+                  <MaterialCommunityIcons name="chevron-right" size={24} color="#FF6584" />
+                </View>
+              </TouchableOpacity>
+              
+              {/* Dopamine Swaps Section */}
+              <View style={{ backgroundColor: '#2d2d3a', borderRadius: 16, padding: 16, marginBottom: 16 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 16 }}>
+                  <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#4BB38A', alignItems: 'center', justifyContent: 'center', marginRight: 12 }}>
+                    <MaterialCommunityIcons name="swap-horizontal" size={20} color="white" />
+                  </View>
+                  <Text style={{ color: 'white', fontSize: 18, fontWeight: 'bold', flex: 1 }}>Quick Dopamine Swaps</Text>
+                  <TouchableOpacity onPress={() => {
+                    setShowUrgeHelpModal(false);
+                    router.push("/DopamineSwapsScreen");
+                  }}>
+                    <Text style={{ color: '#4BB38A', fontWeight: '600' }}>View All</Text>
+                  </TouchableOpacity>
+                </View>
+                
+                {/* Immediate Actions */}
+                <Text style={{ color: 'white', fontWeight: '600', marginBottom: 12, fontSize: 14 }}>Immediate (0-5 min)</Text>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginBottom: 16 }}>
+                  {dopamineSwapSuggestions.immediate.map((activity) => (
+                    <TouchableOpacity 
+                      key={activity.id}
+                      style={{ width: '48%', padding: 12, borderRadius: 12, marginBottom: 8, backgroundColor: activity.color + '20' }}
+                    >
+                      <View style={{ alignItems: 'center' }}>
+                        <MaterialCommunityIcons name={activity.icon} size={24} color={activity.color} />
+                        <Text style={{ color: 'white', fontSize: 12, fontWeight: '600', marginTop: 4, textAlign: 'center' }}>{activity.name}</Text>
+                        <Text style={{ color: '#7a8b99', fontSize: 12, marginTop: 2 }}>{activity.duration}</Text>
+                      </View>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+                
+                {/* Longer Activities */}
+                <Text style={{ color: 'white', fontWeight: '600', marginBottom: 12, fontSize: 14 }}>Longer Activities (10+ min)</Text>
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
+                  {dopamineSwapSuggestions.longer.map((activity) => (
+                    <TouchableOpacity 
+                      key={activity.id}
+                      style={{ width: '48%', padding: 12, borderRadius: 12, marginBottom: 8, backgroundColor: activity.color + '20' }}
+                    >
+                      <View style={{ alignItems: 'center' }}>
+                        <MaterialCommunityIcons name={activity.icon} size={24} color={activity.color} />
+                        <Text style={{ color: 'white', fontSize: 12, fontWeight: '600', marginTop: 4, textAlign: 'center' }}>{activity.name}</Text>
+                        <Text style={{ color: '#7a8b99', fontSize: 12, marginTop: 2 }}>{activity.duration}</Text>
+                      </View>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            </ScrollView>
+            
+            {/* Close Button */}
+            <TouchableOpacity 
+              style={{ marginTop: 16, padding: 16, backgroundColor: '#2d2d3a', borderRadius: 16 }}
+              onPress={() => setShowUrgeHelpModal(false)}
+            >
+              <Text style={{ color: 'white', textAlign: 'center', fontWeight: '600' }}>Close</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
     </>
