@@ -9,6 +9,47 @@ import { auth, db } from "../../firebaseConfig";
 
 const { width: screenWidth } = Dimensions.get('window');
 
+// Generate mock calendar data for the current month
+const generateCalendarData = () => {
+  const today = new Date();
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+  
+  const calendarData = {};
+  
+  // Generate random activity for each day
+  for (let day = 1; day <= daysInMonth; day++) {
+    const hasActivity = Math.random() > 0.3; // 70% chance of activity
+    if (hasActivity) {
+      const urges = Math.floor(Math.random() * 5) + 1;
+      const resisted = Math.floor(Math.random() * urges) + Math.floor(urges * 0.6);
+      calendarData[day] = {
+        urges,
+        resisted,
+        relapsed: urges - resisted,
+        streak: Math.floor(Math.random() * 30),
+        feeling: ['neutral', 'bored', 'stressed', 'anxious', 'sad'][Math.floor(Math.random() * 5)]
+      };
+    }
+  }
+  
+  return { calendarData, daysInMonth, firstDay, currentMonth, currentYear };
+};
+
+// Generate mock weekly activity data
+const generateWeeklyActivityData = () => {
+  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  return days.map(day => ({
+    day,
+    urges: Math.floor(Math.random() * 8) + 1,
+    resisted: Math.floor(Math.random() * 6) + 3,
+    relapsed: Math.floor(Math.random() * 3),
+    mood: Math.floor(Math.random() * 5) + 1 // 1-5 scale
+  }));
+};
+
 // Mock data based on analysis.py structure - in production this would come from running the Python script
 const mockAnalysisData = {
   event_level: {
@@ -205,10 +246,177 @@ const TimeOfDayChart = ({ peakRelapseHours }) => {
   );
 };
 
+// Calendar Component
+const CalendarView = ({ calendarData, daysInMonth, firstDay, currentMonth, currentYear }) => {
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'];
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  
+  const today = new Date().getDate();
+  const isCurrentMonth = new Date().getMonth() === currentMonth && new Date().getFullYear() === currentYear;
+  
+  // Create calendar grid
+  const calendarGrid = [];
+  let dayCount = 1;
+  
+  for (let week = 0; week < 6; week++) {
+    const weekRow = [];
+    for (let day = 0; day < 7; day++) {
+      const dayIndex = week * 7 + day;
+      
+      if (dayIndex < firstDay || dayCount > daysInMonth) {
+        weekRow.push(null); // Empty cell
+      } else {
+        const dayData = calendarData[dayCount] || null;
+        const isToday = isCurrentMonth && dayCount === today;
+        
+        weekRow.push({
+          day: dayCount,
+          data: dayData,
+          isToday
+        });
+        dayCount++;
+      }
+    }
+    calendarGrid.push(weekRow);
+    if (dayCount > daysInMonth) break;
+  }
+  
+  const getCellColor = (data) => {
+    if (!data) return '#2d2d3a';
+    const successRate = data.resisted / data.urges;
+    if (successRate >= 0.8) return '#4BB38A';
+    if (successRate >= 0.5) return '#FF9500';
+    return '#FF6584';
+  };
+  
+  return (
+    <View>
+      <Text className="text-white text-xl font-bold mb-4 text-center">
+        {monthNames[currentMonth]} {currentYear}
+      </Text>
+      
+      {/* Day headers */}
+      <View className="flex-row mb-2">
+        {dayNames.map((dayName) => (
+          <View key={dayName} className="flex-1 items-center">
+            <Text className="text-[#7a8b99] text-xs font-semibold">{dayName}</Text>
+          </View>
+        ))}
+      </View>
+      
+      {/* Calendar grid */}
+      {calendarGrid.map((week, weekIndex) => (
+        <View key={weekIndex} className="flex-row mb-1">
+          {week.map((cell, cellIndex) => (
+            <View key={cellIndex} className="flex-1 items-center p-1">
+              {cell ? (
+                <TouchableOpacity
+                  className="w-8 h-8 rounded-lg items-center justify-center border"
+                  style={{
+                    backgroundColor: getCellColor(cell.data),
+                    borderColor: cell.isToday ? '#6C63FF' : 'transparent',
+                    borderWidth: cell.isToday ? 2 : 0
+                  }}
+                >
+                  <Text className="text-white text-xs font-bold">{cell.day}</Text>
+                </TouchableOpacity>
+              ) : (
+                <View className="w-8 h-8" />
+              )}
+            </View>
+          ))}
+        </View>
+      ))}
+      
+      {/* Legend */}
+      <View className="flex-row justify-center mt-4 space-x-4">
+        <View className="flex-row items-center">
+          <View className="w-3 h-3 rounded bg-[#4BB38A] mr-1" />
+          <Text className="text-[#7a8b99] text-xs">Good Day</Text>
+        </View>
+        <View className="flex-row items-center">
+          <View className="w-3 h-3 rounded bg-[#FF9500] mr-1" />
+          <Text className="text-[#7a8b99] text-xs">Mixed Day</Text>
+        </View>
+        <View className="flex-row items-center">
+          <View className="w-3 h-3 rounded bg-[#FF6584] mr-1" />
+          <Text className="text-[#7a8b99] text-xs">Tough Day</Text>
+        </View>
+        <View className="flex-row items-center">
+          <View className="w-3 h-3 rounded bg-[#2d2d3a] mr-1" />
+          <Text className="text-[#7a8b99] text-xs">No Data</Text>
+        </View>
+      </View>
+    </View>
+  );
+};
+
+// Weekly Activity Chart Component
+const WeeklyActivityChart = ({ weeklyData }) => {
+  const maxUrges = Math.max(...weeklyData.map(d => d.urges));
+  const maxMood = 5;
+  
+  return (
+    <View>
+      <View className="flex-row justify-between items-end h-32 mb-4">
+        {weeklyData.map((dayData, index) => {
+          const urgeHeight = (dayData.urges / maxUrges) * 80;
+          const moodHeight = (dayData.mood / maxMood) * 80;
+          const resistedWidth = dayData.urges > 0 ? (dayData.resisted / dayData.urges) * 100 : 0;
+          
+          return (
+            <View key={index} className="items-center flex-1">
+              {/* Mood indicator (background bar) */}
+              <View className="absolute bottom-8 w-6 bg-[#6C63FF] opacity-30 rounded-t-md"
+                style={{ height: Math.max(4, moodHeight) }} />
+              
+              {/* Urge bar with resistance overlay */}
+              <View className="relative w-6 rounded-t-md overflow-hidden bg-[#FF6584]"
+                style={{ height: Math.max(8, urgeHeight) }}>
+                <View 
+                  className="absolute bottom-0 w-full bg-[#4BB38A] rounded-t-md"
+                  style={{ height: `${resistedWidth}%` }}
+                />
+              </View>
+              
+              <Text className="text-[#7a8b99] text-xs mt-2 font-semibold">{dayData.day}</Text>
+              
+              {/* Stats below day name */}
+              <View className="items-center mt-1">
+                <Text className="text-[#4BB38A] text-[10px]">{dayData.resisted}R</Text>
+                <Text className="text-[#FF6584] text-[10px]">{dayData.relapsed}F</Text>
+              </View>
+            </View>
+          );
+        })}
+      </View>
+      
+      {/* Legend */}
+      <View className="flex-row justify-center space-x-6">
+        <View className="flex-row items-center">
+          <View className="w-3 h-3 rounded bg-[#4BB38A] mr-1" />
+          <Text className="text-[#7a8b99] text-xs">Resisted</Text>
+        </View>
+        <View className="flex-row items-center">
+          <View className="w-3 h-3 rounded bg-[#FF6584] mr-1" />
+          <Text className="text-[#7a8b99] text-xs">Relapsed</Text>
+        </View>
+        <View className="flex-row items-center">
+          <View className="w-3 h-3 rounded bg-[#6C63FF] opacity-30 mr-1" />
+          <Text className="text-[#7a8b99] text-xs">Mood Level</Text>
+        </View>
+      </View>
+    </View>
+  );
+};
+
 export default function AnalyticsScreen() {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [analysisData] = useState(mockAnalysisData);
+  const [calendarInfo] = useState(generateCalendarData());
+  const [weeklyActivityData] = useState(generateWeeklyActivityData());
 
   useEffect(() => {
     const load = async () => {
@@ -405,6 +613,26 @@ export default function AnalyticsScreen() {
                 {analysisData.commitment.commitment_score_rolling_30d_avg.toFixed(0)}% commitment score
               </Text>
             </View>
+          </LinearGradient>
+
+          {/* Weekly Activity Chart */}
+          <LinearGradient colors={["#1a1a2e", "#0f0f1e"]} className="rounded-3xl p-5 mb-6" start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
+            <Text className="text-white text-xl font-bold mb-4">Weekly Activity</Text>
+            <Text className="text-[#7a8b99] text-sm mb-4">Your resistance patterns this week</Text>
+            <WeeklyActivityChart weeklyData={weeklyActivityData} />
+          </LinearGradient>
+
+          {/* Calendar View */}
+          <LinearGradient colors={["#1a1a2e", "#0f0f1e"]} className="rounded-3xl p-5 mb-6" start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
+            <Text className="text-white text-xl font-bold mb-4">Recovery Calendar</Text>
+            <Text className="text-[#7a8b99] text-sm mb-4">Track your daily progress and patterns</Text>
+            <CalendarView 
+              calendarData={calendarInfo.calendarData}
+              daysInMonth={calendarInfo.daysInMonth}
+              firstDay={calendarInfo.firstDay}
+              currentMonth={calendarInfo.currentMonth}
+              currentYear={calendarInfo.currentYear}
+            />
           </LinearGradient>
 
         </ScrollView>

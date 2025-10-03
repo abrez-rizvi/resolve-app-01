@@ -1,0 +1,69 @@
+Section 1: Usage Patterns
+This section establishes a baseline of the user's current habits.
+Question 1 of 8: "In a typical week, how often do you watch pornography?"
+(A) Rarely, or not every week (0 points)
+(B) 1-3 times a week (1 point)
+(C) 4-6 times a week (2 points)
+(D) Daily, or multiple times a day (3 points)
+Question 2 of 8: "When you do watch, how long does a typical session last?"
+(A) Less than 15 minutes (0 points)
+(B) 15 to 45 minutes (1 point)
+(C) About an hour (2 points)
+(D) More than an hour (3 points)
+
+Section 2: Loss of Control & Compulsivity
+This section probes the core of dependency—the inability to control the behavior.
+Question 3 of 8: "Do you often find yourself watching porn for much longer than you originally intended?"
+(A) Never (0 points)
+(B) Sometimes (1 point)
+(C) Often (2 points)
+(D) Almost every time (3 points)
+Question 4 of 8: "Have you tried to stop or cut down on watching, but found you couldn't?"
+(A) I have never tried to stop. (1 point)
+(B) I've tried and it was manageable. (2 points)
+(C) I've tried and it was very difficult. (3 points)
+(D) I've tried multiple times and failed. (4 points)
+
+Section 3: Psychological Reliance & Triggers
+This helps identify why the user turns to pornography.
+Question 5 of 8: "What is the most common reason you turn to pornography?"
+(A) Sexual curiosity or entertainment (0 points)
+(B) Habit or boredom (1 point)
+(C) To cope with stress or anxiety (2 points)
+(D) To escape feelings of sadness, loneliness, or anger (3 points)
+Question 6 of 8: "After watching, how do you typically feel about yourself?"
+(A) Fine, or positive (0 points)
+(B) Indifferent or empty (1 point)
+(C) A little guilty or regretful (2 points)
+(D) Overwhelmed with shame, anxiety, or disgust (3 points)
+
+Section 4: Negative Consequences
+This measures the tangible, real-world impact of the behavior.
+Question 7 of 8: "Has your pornography use negatively affected your real-life relationships, work, or studies?"
+(A) No, I don't believe so. (0 points)
+(B) It has caused minor issues or arguments. (1 point)
+(C) It has caused significant problems (e.g., loss of focus, hiding the behavior). (2 points)
+(D) It has directly damaged a relationship, my job, or my academic performance. (3 points)
+Question 8 of 8: "Do you find yourself thinking about pornography when you should be focusing on other things (like work, conversations, or hobbies)?"
+(A) Rarely or never (0 points)
+(B) Sometimes (1 point)
+(C) Often, it's distracting (2 points)
+(D) Constantly, it's difficult to think about anything else (3 points)
+
+Scoring and Interpretation (The Metrics)
+After the user answers all the questions, the app calculates their total score to determine their PDI.
+Total Possible Score: 26 points
+PDI Levels:
+Low Dependability (Score: 0-6)
+Interpretation: Your usage appears to be controlled and is likely not causing significant issues in your life. You may be here for curiosity or to build healthier habits.
+App Action: The app can recommend foundational content on mindful internet use, goal setting, and channel-switching techniques. The approach can be less intensive.
+Moderate Dependability (Score: 7-13)
+Interpretation: Your habit is becoming more established. You may be feeling a loss of control and experiencing some negative consequences. This is a crucial stage to build awareness and new coping mechanisms.
+App Action: The app should suggest a structured program, introduce CBT exercises for identifying triggers, and strongly encourage using the "Urge Log" and "Community" features.
+High Dependability (Score: 14-20)
+Interpretation: Your pornography use is likely a primary coping mechanism and is having a clear, negative impact on your life. The behavior may feel compulsive and difficult to manage on your own.
+App Action: The app should immediately recommend a more intensive, structured daily plan. It should prioritize features like accountability partners, emergency "parachute" options, and advanced content on neuroscience and recovery. It could also provide resources for finding a therapist.
+Severe Dependability (Score: 21-26)
+Interpretation: Your relationship with pornography is causing significant distress and disruption. The behavior is likely compulsive, and you may feel powerless to stop. Professional help is strongly recommended.
+App Action: The app should present its most robust features immediately. The tone should be highly supportive but firm. Most importantly, it should prominently display resources for professional help, such as links to therapists specializing in addiction, support groups (like SAA), and mental health hotlines. The app serves as a powerful tool, but it should encourage professional guidance at this level.
+

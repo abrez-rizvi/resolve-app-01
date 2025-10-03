@@ -21,7 +21,6 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState(true);
   const [progressScore, setProgressScore] = useState(52); // Default progress score
   const [rewardPoints, setRewardPoints] = useState(140); // Default reward points
-  const [showTriggerDropdown, setShowTriggerDropdown] = useState(false);
   const [todayMood, setTodayMood] = useState(null);
   
   const badgeMilestones = [
@@ -29,13 +28,6 @@ export default function HomeScreen() {
     { days: 7, name: "7-Day Badge" },
     { days: 30, name: "30-Day Badge" },
     { days: 100, name: "100-Day Badge" },
-  ];
-  
-  const triggerOptions = [
-    { id: 'bored', name: 'Bored', icon: 'clock-outline', color: '#FF6584' },
-    { id: 'stressed', name: 'Stressed', icon: 'emoticon-stressed', color: '#6C63FF' },
-    { id: 'fatigued', name: 'Fatigued', icon: 'sleep', color: '#FF9500' },
-    { id: 'lonely', name: 'Lonely', icon: 'account-heart', color: '#4BB38A' },
   ];
   
   const feelingOptions = {
@@ -107,32 +99,6 @@ export default function HomeScreen() {
     } catch (e) {
       console.log(e);
       ToastAndroid.show("Failed to record urge", ToastAndroid.SHORT);
-    }
-  };
-  
-  const handleTriggerRecord = async (trigger) => {
-    try {
-      const user = auth.currentUser;
-      if (!user) return;
-      
-      const userRef = doc(db, "users", user.uid);
-      const triggerEntry = {
-        trigger: trigger.id,
-        triggerName: trigger.name,
-        date: new Date().toISOString(),
-        timestamp: serverTimestamp(),
-        hour: new Date().getHours()
-      };
-      
-      await updateDoc(userRef, {
-        triggers: arrayUnion(triggerEntry)
-      });
-      
-      setShowTriggerDropdown(false);
-      ToastAndroid.show(`Trigger recorded: ${trigger.name}`, ToastAndroid.SHORT);
-    } catch (e) {
-      console.log(e);
-      ToastAndroid.show("Failed to record trigger", ToastAndroid.SHORT);
     }
   };
   
@@ -233,9 +199,7 @@ const handleDopamineSwapsPress = () => {
             <Text className="text-white font-bold text-lg">RESOLVE</Text>
           </View>
           <View className="flex-1">
-            <Text className="text-lg font-semibold text-white">
-              
-            </Text>
+            <Text className="text-lg font-semibold text-white"></Text>
             <Text className="text-xs text-[#7a8b99]">
               {displayName ? `Welcome, ${displayName}` : ""}
             </Text>
@@ -249,66 +213,63 @@ const handleDopamineSwapsPress = () => {
             </View>
           </TouchableOpacity>
         </View>
-        
+
+        {/* Dependability Score Card (local state) */}
+        <View className="space-y-3 mb-6">
+          <TouchableOpacity
+            className="flex-row items-center bg-[#FF6584] p-5 rounded-2xl shadow-lg"
+            onPress={() => router.push("/DependabilityAssessment")}
+          >
+            <View className="w-14 h-14 rounded-full bg-[#FF6584] items-center justify-center mr-4">
+              <MaterialCommunityIcons name="clipboard-check" size={28} color="white" />
+            </View>
+            <View className="flex-1">
+              <Text className="text-white font-bold text-lg mb-1">Calculate Your Adult Content Dependability Score</Text>
+              <Text className="text-[#fff] text-xs">Take the assessment to see your score and how you compare to others</Text>
+              {/* Show last score if available */}
+              {typeof window !== 'undefined' && window.localStorage && window.localStorage.getItem('dependabilityScore') && (
+                <View className="mt-2">
+                  <Text className="text-[#4BB38A] text-base font-bold">Last Score: {window.localStorage.getItem('dependabilityScore')} / 26</Text>
+                </View>
+              )}
+            </View>
+            <MaterialCommunityIcons name="chevron-right" size={28} color="#fff" />
+          </TouchableOpacity>
+        </View>
+
+        {/* ...existing code... */}
         <ScrollView showsVerticalScrollIndicator={false} className="flex-1">
-          {/* Daily Streak Card - Primary Element */}
           <LinearGradient
             colors={["#1a1a2e", "#0f0f1e"]}
             className="rounded-3xl overflow-hidden mb-6 shadow-lg"
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
           >
-            {/* Top Gradient Header */}
-            <LinearGradient
-              colors={["#6C63FF", "#4BB38A"]}
-              className="w-full p-4"
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-            >
-              <View className="flex-row justify-between items-center">
-                <View>
-                  <Text className="text-white text-xs font-semibold opacity-80">MILESTONE STREAK</Text>
-                  <Text className="text-white text-2xl font-bold">{currentStreak} Days</Text>
-                </View>
-                <TouchableOpacity 
-                  className="bg-white bg-opacity-20 p-2 rounded-full"
-                  onPress={handleCheckIn}
-                >
-                  <MaterialCommunityIcons name="check" size={22} color="white" />
-                </TouchableOpacity>
-              </View>
-            </LinearGradient>
-            
-            {/* Main Content */}
             <View className="p-6">
-              {/* Time Counter with Animation */}
-              <View className="flex-row items-end justify-center mb-6">
-                <View className="items-center px-3">
-                  <View className="w-16 h-16 rounded-xl bg-[#2d2d3a] items-center justify-center">
-                    <Text className="text-white text-2xl font-bold">{currentStreak}</Text>
+              {/* Redesigned Streak Time Counter */}
+              <View className="flex-row items-center justify-center mb-6">
+                <LinearGradient
+                  colors={["#6C63FF", "#4BB38A"]}
+                  className="rounded-3xl flex-row items-center px-6 py-5 shadow-lg"
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <View className="items-center mx-4">
+                    <Text className="text-white text-4xl font-extrabold tracking-wide drop-shadow-lg">{currentStreak}</Text>
+                    <Text className="text-[#E0E0E0] text-xs mt-1 font-semibold tracking-wider">DAYS</Text>
                   </View>
-                  <Text className="text-[#7a8b99] text-xs mt-2">DAYS</Text>
-                </View>
-                
-                <Text className="text-white text-xl mx-1 mb-3">:</Text>
-                
-                <View className="items-center px-3">
-                  <View className="w-16 h-16 rounded-xl bg-[#2d2d3a] items-center justify-center">
-                    <Text className="text-white text-2xl font-bold">{Math.floor(Math.random() * 24)}</Text>
+                  <Text className="text-white text-3xl font-bold mx-2">:</Text>
+                  <View className="items-center mx-4">
+                    <Text className="text-white text-4xl font-extrabold tracking-wide drop-shadow-lg">{Math.floor(Math.random() * 24)}</Text>
+                    <Text className="text-[#E0E0E0] text-xs mt-1 font-semibold tracking-wider">HOURS</Text>
                   </View>
-                  <Text className="text-[#7a8b99] text-xs mt-2">HOURS</Text>
-                </View>
-                
-                <Text className="text-white text-xl mx-1 mb-3">:</Text>
-                
-                <View className="items-center px-3">
-                  <View className="w-16 h-16 rounded-xl bg-[#2d2d3a] items-center justify-center">
-                    <Text className="text-white text-2xl font-bold">{Math.floor(Math.random() * 60)}</Text>
+                  <Text className="text-white text-3xl font-bold mx-2">:</Text>
+                  <View className="items-center mx-4">
+                    <Text className="text-white text-4xl font-extrabold tracking-wide drop-shadow-lg">{Math.floor(Math.random() * 60)}</Text>
+                    <Text className="text-[#E0E0E0] text-xs mt-1 font-semibold tracking-wider">MINUTES</Text>
                   </View>
-                  <Text className="text-[#7a8b99] text-xs mt-2">MINUTES</Text>
-                </View>
+                </LinearGradient>
               </View>
-              
               {/* Comparison with previous best */}
               <View className="bg-[#2d2d3a] p-3 rounded-xl mb-6">
                 <View className="flex-row justify-between">
@@ -324,57 +285,6 @@ const handleDopamineSwapsPress = () => {
                     }}
                   />
                 </View>
-              </View>
-              
-              {/* Quick Actions - More Useful Tools */}
-              <View className="space-y-3">
-                <Text className="text-white font-semibold text-sm">Quick Actions</Text>
-                <Text className="text-white font-semibold text-sm"></Text>
-                
-                {/* Emergency Support */}
-                <TouchableOpacity 
-                  className="flex-row items-center bg-[#FF658420] p-4 rounded-2xl"
-                  onPress={() => router.push("/(tabs)/EmergencyScreen")}
-                >
-                  <View className="w-10 h-10 rounded-full bg-[#FF6584] items-center justify-center mr-3">
-                    <MaterialCommunityIcons name="phone" size={20} color="white" />
-                  </View>
-                  <View className="flex-1">
-                    <Text className="text-white font-semibold">Emergency Support</Text>
-                    <Text className="text-[#7a8b99] text-xs">Get immediate help when you need it</Text>
-                  </View>
-                  <MaterialCommunityIcons name="chevron-right" size={20} color="#FF6584" />
-                </TouchableOpacity>
-                
-                {/* Community Support */}
-                <TouchableOpacity 
-                  className="flex-row items-center bg-[#4BB38A20] p-4 rounded-2xl"
-                  onPress={() => router.push("/(tabs)/CommunityScreen")}
-                >
-                  <View className="w-10 h-10 rounded-full bg-[#4BB38A] items-center justify-center mr-3">
-                    <MaterialCommunityIcons name="account-group" size={20} color="white" />
-                  </View>
-                  <View className="flex-1">
-                    <Text className="text-white font-semibold">Community Support</Text>
-                    <Text className="text-[#7a8b99] text-xs">Connect with others on the same journey</Text>
-                  </View>
-                  <MaterialCommunityIcons name="chevron-right" size={20} color="#4BB38A" />
-                </TouchableOpacity>
-                
-                {/* Progress Analytics */}
-                <TouchableOpacity 
-                  className="flex-row items-center bg-[#6C63FF20] p-4 rounded-2xl"
-                  onPress={handleProgressPress}
-                >
-                  <View className="w-10 h-10 rounded-full bg-[#6C63FF] items-center justify-center mr-3">
-                    <MaterialCommunityIcons name="chart-line" size={20} color="white" />
-                  </View>
-                  <View className="flex-1">
-                    <Text className="text-white font-semibold">View Analytics</Text>
-                    <Text className="text-[#7a8b99] text-xs">See your detailed progress and patterns</Text>
-                  </View>
-                  <MaterialCommunityIcons name="chevron-right" size={20} color="#6C63FF" />
-                </TouchableOpacity>
               </View>
             </View>
           </LinearGradient>
@@ -517,7 +427,7 @@ const handleDopamineSwapsPress = () => {
           {/* Additional Features */}
           <View className="mb-6">
             
-            {/* Trigger Tracking */}
+            {/* Identify Triggers */}
             <LinearGradient
               colors={["#1a1a2e", "#0f0f1e"]}
               className="rounded-3xl p-4 mb-4"
@@ -525,15 +435,23 @@ const handleDopamineSwapsPress = () => {
               end={{ x: 1, y: 1 }}
             >
               <View className="flex-row items-center justify-between mb-3">
-                <Text className="text-white font-semibold">Feeling an urge?</Text>
+                <View className="flex-1">
+                  <Text className="text-white font-semibold text-lg mb-1">Identify Your Triggers</Text>
+                  <Text className="text-[#7a8b99] text-sm">
+                    Discover what causes your urges with our personalized assessment
+                  </Text>
+                </View>
                 <TouchableOpacity 
-                  className="bg-[#FF6584] px-4 py-2 rounded-full"
-                  onPress={() => setShowTriggerDropdown(true)}
+                  className="bg-[#6C63FF] px-4 py-2 rounded-full ml-3"
+                  onPress={() => router.push("/IdentifyTriggersScreen")}
                 >
-                  <Text className="text-white text-sm font-semibold">Record Trigger</Text>
+                  <Text className="text-white text-sm font-semibold">Take Quiz</Text>
                 </TouchableOpacity>
               </View>
-              <Text className="text-[#7a8b99] text-xs">Track what triggers your urges to better understand patterns</Text>
+              <View className="flex-row items-center">
+                <MaterialCommunityIcons name="target" size={20} color="#6C63FF" />
+                <Text className="text-[#6C63FF] text-xs ml-2">5 questions • 3 minutes</Text>
+              </View>
             </LinearGradient>
             
             {/* Dopamine Swaps Button */}

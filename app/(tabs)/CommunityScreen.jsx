@@ -1,253 +1,289 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import { StatusBar } from "expo-status-bar";
-import React, { useMemo, useState } from "react";
-import { ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useState } from "react";
+import { FlatList, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+
 export default function CommunityScreen() {
-  // Forum state (local placeholder)
-  const [threads, setThreads] = useState([
-    { id: "relapse", title: "Relapse Stories", posts: [{ id: "p1", text: "Had a setback last week, getting back up.", upvotes: 5, replies: [{ id: "r1", text: "Proud of you for trying again!" }] }] },
-    { id: "motivation", title: "Motivation", posts: [{ id: "p2", text: "Day 14 — feeling clearer than ever.", upvotes: 12, replies: [] }] },
-    { id: "tips", title: "Tips", posts: [{ id: "p3", text: "Cold showers + walk outside helped me.", upvotes: 8, replies: [] }] },
+  // Tab state: "feed" or "dms"
+  const [activeTab, setActiveTab] = useState("feed");
+
+  // Feed state (Twitter/Reddit style)
+  const [posts, setPosts] = useState([
+    {
+      id: "p1",
+      user: "@dopaminer",
+      avatar: "partial-react-logo.png",
+      text: "Had a setback last week, getting back up. #RelapseStory",
+      upvotes: 5,
+      replies: [
+        { id: "r1", user: "@supporter", text: "Proud of you for trying again!" },
+      ],
+      timestamp: "2h ago",
+    },
+    {
+      id: "p2",
+      user: "@clarity",
+      avatar: "react-logo.png",
+      text: "Day 14 — feeling clearer than ever. #Motivation",
+      upvotes: 12,
+      replies: [],
+      timestamp: "5h ago",
+    },
+    {
+      id: "p3",
+      user: "@tips_guy",
+      avatar: "icon.png",
+      text: "Cold showers + walk outside helped me. #Tips",
+      upvotes: 8,
+      replies: [],
+      timestamp: "1d ago",
+    },
   ]);
   const [newPost, setNewPost] = useState("");
-  const [activeThreadId, setActiveThreadId] = useState("relapse");
   const [replyDrafts, setReplyDrafts] = useState({});
 
-  const activeThread = useMemo(() => threads.find((t) => t.id === activeThreadId), [threads, activeThreadId]);
+  // DMs state
+  const [conversations, setConversations] = useState([
+    {
+      id: "dm1",
+      name: "Recovery Group",
+      avatar: "resolve.png",
+      messages: [
+        { id: "m1", text: "Welcome to the group!", fromMe: false },
+        { id: "m2", text: "Thanks! Glad to be here.", fromMe: true },
+      ],
+    },
+    {
+      id: "dm2",
+      name: "@clarity",
+      avatar: "react-logo.png",
+      messages: [
+        { id: "m1", text: "How's your streak going?", fromMe: false },
+      ],
+    },
+  ]);
+  const [activeConversationId, setActiveConversationId] = useState(null);
+  const [dmDraft, setDmDraft] = useState("");
 
+  // Feed actions
   const handleUpvote = (postId) => {
-    setThreads((prev) =>
-      prev.map((t) =>
-        t.id !== activeThreadId
-          ? t
-          : {
-              ...t,
-              posts: t.posts.map((p) => (p.id === postId ? { ...p, upvotes: p.upvotes + 1 } : p)),
-            }
-      )
+    setPosts((prev) =>
+      prev.map((p) => (p.id === postId ? { ...p, upvotes: p.upvotes + 1 } : p))
     );
   };
 
   const handleAddPost = () => {
     if (!newPost.trim()) return;
-    setThreads((prev) =>
-      prev.map((t) =>
-        t.id !== activeThreadId
-          ? t
-          : {
-              ...t,
-              posts: [{ id: `p${Date.now()}`, text: newPost.trim(), upvotes: 0, replies: [] }, ...t.posts],
-            }
-      )
-    );
+    setPosts([
+      {
+        id: `p${Date.now()}`,
+        user: "@me",
+        avatar: "android-icon-foreground.png",
+        text: newPost.trim(),
+        upvotes: 0,
+        replies: [],
+        timestamp: "now",
+      },
+      ...posts,
+    ]);
     setNewPost("");
   };
 
   const handleAddReply = (postId) => {
     const text = replyDrafts[postId]?.trim();
     if (!text) return;
-    setThreads((prev) =>
-      prev.map((t) =>
-        t.id !== activeThreadId
-          ? t
-          : {
-              ...t,
-              posts: t.posts.map((p) =>
-                p.id === postId ? { ...p, replies: [...p.replies, { id: `r${Date.now()}`, text }] } : p
-              ),
+    setPosts((prev) =>
+      prev.map((p) =>
+        p.id === postId
+          ? {
+              ...p,
+              replies: [...p.replies, { id: `r${Date.now()}`, user: "@me", text }],
             }
+          : p
       )
     );
     setReplyDrafts((d) => ({ ...d, [postId]: "" }));
   };
 
-  // Group Therapy (placeholder schedule)
-  const [sessions] = useState([
-    { id: "s1", title: "Evening Check-in", time: "Today 7:00 PM", mode: "text" },
-    { id: "s2", title: "Weekend Recovery Circle", time: "Sat 10:00 AM", mode: "audio" },
-  ]);
-  const [joinedSessionId, setJoinedSessionId] = useState(null);
-
-  const handleJoin = (id) => {
-    setJoinedSessionId(id);
+  // DMs actions
+  const handleSendDm = () => {
+    if (!dmDraft.trim() || !activeConversationId) return;
+    setConversations((prev) =>
+      prev.map((c) =>
+        c.id === activeConversationId
+          ? {
+              ...c,
+              messages: [...c.messages, { id: `m${Date.now()}`, text: dmDraft.trim(), fromMe: true }],
+            }
+          : c
+      )
+    );
+    setDmDraft("");
   };
 
-  // Accountability Partner
-  const [partnerCode, setPartnerCode] = useState("");
-  const [connectedCode, setConnectedCode] = useState(null);
-  const [shareStreak, setShareStreak] = useState(true);
-  const [shareAlerts, setShareAlerts] = useState(false);
-  const [messageDraft, setMessageDraft] = useState("");
-  const [messages, setMessages] = useState([]);
-
-  const handleConnect = () => {
-    if (!partnerCode.trim()) return;
-    setConnectedCode(partnerCode.trim());
-    setPartnerCode("");
-  };
-
-  const handleSendMessage = () => {
-    if (!messageDraft.trim() || !connectedCode) return;
-    setMessages((m) => [...m, { id: `m${Date.now()}`, text: messageDraft.trim(), fromMe: true }]);
-    setMessageDraft("");
-  };
-
+  // UI
   return (
     <SafeAreaView className="flex-1 bg-[#0f0f1e]">
       <StatusBar style="light" />
       <View className="flex-1 bg-[#0f0f1e] px-4 pt-4">
         <View className="flex-row items-center mb-6">
-          <Text className="text-white text-xl font-bold">Community & Support</Text>
+          <Text className="text-white text-xl font-bold">Community</Text>
+        </View>
+        {/* Tabs */}
+        <View className="flex-row mb-4">
+          <TouchableOpacity
+            className={`flex-1 py-2 rounded-xl mr-2 ${activeTab === "feed" ? "bg-[#6C63FF]" : "bg-[#151529]"}`}
+            onPress={() => setActiveTab("feed")}
+          >
+            <Text className="text-white text-center font-semibold">Feed</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            className={`flex-1 py-2 rounded-xl ${activeTab === "dms" ? "bg-[#6C63FF]" : "bg-[#151529]"}`}
+            onPress={() => setActiveTab("dms")}
+          >
+            <Text className="text-white text-center font-semibold">DMs</Text>
+          </TouchableOpacity>
         </View>
 
-        <ScrollView showsVerticalScrollIndicator={false} className="mb-6">
-          {/* Anonymous Forum */}
-          <LinearGradient colors={["#1a1a2e", "#0f0f1e"]} className="rounded-3xl p-5 mb-6" start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
-            <View className="flex-row items-center justify-between mb-3">
-              <Text className="text-white text-lg font-bold">Anonymous Forum</Text>
-              <View className="flex-row">
-                {threads.map((t) => (
-                  <TouchableOpacity key={t.id} className="ml-2" onPress={() => setActiveThreadId(t.id)}>
-                    <Text className="text-xs" style={{ color: activeThreadId === t.id ? "#6C63FF" : "#7a8b99" }}>{t.title}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-
+        {/* Feed Section */}
+        {activeTab === "feed" && (
+          <View className="flex-1">
             <View className="bg-[#151529] rounded-2xl p-3 mb-3">
               <TextInput
                 value={newPost}
                 onChangeText={setNewPost}
-                placeholder={`Share to ${activeThread?.title}`}
+                placeholder="What's happening? Share your experience..."
                 placeholderTextColor="#7a8b99"
                 className="text-white"
+                multiline
               />
               <TouchableOpacity className="self-end mt-2 bg-[#6C63FF] px-3 py-1 rounded-lg" onPress={handleAddPost}>
                 <Text className="text-white text-xs">Post</Text>
               </TouchableOpacity>
             </View>
-
-            {activeThread?.posts.map((p) => (
-              <View key={p.id} className="bg-[#1a1a2e] rounded-2xl p-4 mb-3">
-                <Text className="text-white mb-2">{p.text}</Text>
-                <View className="flex-row items-center mb-2">
-                  <TouchableOpacity className="flex-row items-center mr-4" onPress={() => handleUpvote(p.id)}>
-                    <MaterialCommunityIcons name="arrow-up-bold" size={18} color="#FFD700" />
-                    <Text className="text-white text-xs ml-1">{p.upvotes}</Text>
-                  </TouchableOpacity>
-                </View>
-                {p.replies?.length ? (
-                  <View className="bg-[#151529] rounded-xl p-3 mb-2">
-                    {p.replies.map((r) => (
-                      <Text key={r.id} className="text-[#cfd6de] text-xs mb-1">• {r.text}</Text>
-                    ))}
+            <FlatList
+              data={posts}
+              keyExtractor={(item) => item.id}
+              showsVerticalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <View className="bg-[#1a1a2e] rounded-2xl p-4 mb-3">
+                  <View className="flex-row items-center mb-2">
+                    <View className="w-8 h-8 rounded-full bg-[#151529] mr-2 items-center justify-center">
+                      {/* Avatar placeholder, could use Image if available */}
+                      <MaterialCommunityIcons name="account" size={24} color="#6C63FF" />
+                    </View>
+                    <Text className="text-white font-semibold">{item.user}</Text>
+                    <Text className="text-[#7a8b99] ml-auto text-xs">{item.timestamp}</Text>
                   </View>
-                ) : null}
-                <View className="bg-[#151529] rounded-xl p-2 flex-row items-center">
-                  <TextInput
-                    value={replyDrafts[p.id] || ""}
-                    onChangeText={(t) => setReplyDrafts((d) => ({ ...d, [p.id]: t }))}
-                    placeholder="Reply anonymously"
-                    placeholderTextColor="#7a8b99"
-                    className="text-white flex-1"
-                  />
-                  <TouchableOpacity className="ml-2 bg-[#4BB38A] px-3 py-1 rounded-lg" onPress={() => handleAddReply(p.id)}>
-                    <Text className="text-white text-xs">Reply</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            ))}
-          </LinearGradient>
-
-          {/* AI Group Therapy */}
-          <LinearGradient colors={["#1a1a2e", "#0f0f1e"]} className="rounded-3xl p-5 mb-6" start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
-            <Text className="text-white text-lg font-bold mb-3">AI Group Therapy</Text>
-            {sessions.map((s) => (
-              <View key={s.id} className="bg-[#1a1a2e] rounded-2xl p-4 mb-3">
-                <View className="flex-row items-center mb-2">
-                  <MaterialCommunityIcons name={s.mode === "audio" ? "microphone" : "message-text-outline"} size={18} color="#6C63FF" />
-                  <Text className="text-white ml-2 font-semibold">{s.title}</Text>
-                  <Text className="text-[#7a8b99] ml-auto text-xs">{s.time}</Text>
-                </View>
-                <Text className="text-[#7a8b99] text-xs mb-2">AI facilitator provides prompts and gentle moderation.</Text>
-                {joinedSessionId === s.id ? (
-                  <View className="bg-[#151529] rounded-xl p-3">
-                    <Text className="text-[#cfd6de] text-xs">Prompt: "Share one win and one challenge today."</Text>
+                  <Text className="text-white mb-2">{item.text}</Text>
+                  <View className="flex-row items-center mb-2">
+                    <TouchableOpacity className="flex-row items-center mr-4" onPress={() => handleUpvote(item.id)}>
+                      <MaterialCommunityIcons name="arrow-up-bold" size={18} color="#FFD700" />
+                      <Text className="text-white text-xs ml-1">{item.upvotes}</Text>
+                    </TouchableOpacity>
                   </View>
-                ) : (
-                  <TouchableOpacity className="self-start bg-[#4BB38A] px-3 py-1 rounded-lg" onPress={() => handleJoin(s.id)}>
-                    <Text className="text-white text-xs">Join {s.mode === "audio" ? "Audio" : "Text"} Session</Text>
-                  </TouchableOpacity>
-                )}
-              </View>
-            ))}
-          </LinearGradient>
+                  {item.replies?.length ? (
+                    <View className="bg-[#151529] rounded-xl p-3 mb-2">
+                      {item.replies.map((r) => (
+                        <Text key={r.id} className="text-[#cfd6de] text-xs mb-1">{r.user}: {r.text}</Text>
+                      ))}
+                    </View>
+                  ) : null}
+                  <View className="bg-[#151529] rounded-xl p-2 flex-row items-center">
+                    <TextInput
+                      value={replyDrafts[item.id] || ""}
+                      onChangeText={(t) => setReplyDrafts((d) => ({ ...d, [item.id]: t }))}
+                      placeholder="Reply..."
+                      placeholderTextColor="#7a8b99"
+                      className="text-white flex-1"
+                    />
+                    <TouchableOpacity className="ml-2 bg-[#4BB38A] px-3 py-1 rounded-lg" onPress={() => handleAddReply(item.id)}>
+                      <Text className="text-white text-xs">Reply</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              )}
+            />
+          </View>
+        )}
 
-          {/* Accountability Partner Mode */}
-          <LinearGradient colors={["#1a1a2e", "#0f0f1e"]} className="rounded-3xl p-5 mb-10" start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
-            <Text className="text-white text-lg font-bold mb-3">Accountability Partner</Text>
-            <View className="bg-[#151529] rounded-2xl p-3 mb-3">
-              <TextInput
-                value={partnerCode}
-                onChangeText={setPartnerCode}
-                placeholder="Enter or share your connect code"
-                placeholderTextColor="#7a8b99"
-                className="text-white"
-              />
-              <TouchableOpacity className="self-end mt-2 bg-[#6C63FF] px-3 py-1 rounded-lg" onPress={handleConnect}>
-                <Text className="text-white text-xs">Connect</Text>
-              </TouchableOpacity>
-            </View>
-            {connectedCode ? (
-              <View className="bg-[#1a1a2e] rounded-2xl p-4 mb-3">
-                <Text className="text-[#7a8b99] text-xs mb-2">Connected to: {connectedCode}</Text>
-                <View className="flex-row mb-3">
-                  <TouchableOpacity
-                    className="bg-[#2d2d3a] px-3 py-2 rounded-lg mr-2"
-                    onPress={() => setShareStreak((v) => !v)}
-                  >
-                    <Text className="text-white text-xs">Share Streak: {shareStreak ? "On" : "Off"}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    className="bg-[#2d2d3a] px-3 py-2 rounded-lg"
-                    onPress={() => setShareAlerts((v) => !v)}
-                  >
-                    <Text className="text-white text-xs">Emergency Alerts: {shareAlerts ? "On" : "Off"}</Text>
-                  </TouchableOpacity>
-                </View>
-                <View className="bg-[#151529] rounded-xl p-3 mb-2">
-                  {messages.length ? (
-                    messages.map((m) => (
-                      <Text key={m.id} className="text-[#cfd6de] text-xs mb-1">
-                        {m.fromMe ? "Me: " : "Partner: "}
-                        {m.text}
-                      </Text>
-                    ))
-                  ) : (
-                    <Text className="text-[#7a8b99] text-xs">No messages yet</Text>
-                  )}
-                </View>
-                <View className="bg-[#151529] rounded-xl p-2 flex-row items-center">
-                  <TextInput
-                    value={messageDraft}
-                    onChangeText={setMessageDraft}
-                    placeholder="Private message (placeholder)"
-                    placeholderTextColor="#7a8b99"
-                    className="text-white flex-1"
-                  />
-                  <TouchableOpacity className="ml-2 bg-[#4BB38A] px-3 py-1 rounded-lg" onPress={handleSendMessage}>
-                    <Text className="text-white text-xs">Send</Text>
-                  </TouchableOpacity>
-                </View>
+        {/* DMs Section */}
+        {activeTab === "dms" && (
+          <View className="flex-1">
+            {/* If no conversation selected, show chat list. If selected, show chat full width */}
+            {!activeConversationId ? (
+              <View className="flex-1">
+                <Text className="text-white text-lg font-bold mb-4">Chats</Text>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                  {conversations.map((c) => (
+                    <TouchableOpacity
+                      key={c.id}
+                      className={`flex-row items-center mb-4 p-3 rounded-2xl border ${activeConversationId === c.id ? "bg-[#6C63FF] border-[#6C63FF]" : "bg-[#151529] border-[#23234a]"}`}
+                      onPress={() => setActiveConversationId(c.id)}
+                    >
+                      <View className="w-9 h-9 rounded-full bg-[#1a1a2e] mr-3 items-center justify-center">
+                        <MaterialCommunityIcons name="account-group" size={24} color="#4BB38A" />
+                      </View>
+                      <Text className="text-white font-bold text-base">{c.name}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
               </View>
             ) : (
-              <Text className="text-[#7a8b99] text-xs">Connect with a partner to share progress and messages.</Text>
+              <View className="flex-1">
+                <View className="flex-row items-center mb-4">
+                  <TouchableOpacity onPress={() => setActiveConversationId(null)} className="mr-2">
+                    <MaterialCommunityIcons name="arrow-left" size={22} color="#6C63FF" />
+                  </TouchableOpacity>
+                  <Text className="text-white text-lg font-bold">{conversations.find((c) => c.id === activeConversationId)?.name}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <ScrollView
+                    className="flex-1 bg-[#18182f] rounded-3xl p-4 border border-[#23234a]"
+                    contentContainerStyle={{ paddingBottom: 80 }}
+                  >
+                    {conversations
+                      .find((c) => c.id === activeConversationId)
+                      ?.messages.map((m) => (
+                        <View
+                          key={m.id}
+                          className={`mb-3 flex-row ${m.fromMe ? "justify-end" : "justify-start"}`}
+                        >
+                          <View
+                            className={`max-w-[75%] px-4 py-2 rounded-2xl ${
+                              m.fromMe
+                                ? "bg-[#6C63FF] border border-[#6C63FF]"
+                                : "bg-[#23234a] border border-[#2d2d3a]"
+                            }`}
+                          >
+                            <Text className={`text-xs ${m.fromMe ? "text-white" : "text-[#cfd6de]"}`}>{m.text}</Text>
+                          </View>
+                        </View>
+                      ))}
+                  </ScrollView>
+                  {/* Chat input fixed at bottom */}
+                  <View style={{ position: "absolute", left: 0, right: 0, bottom: 0 }}>
+                    <View className="flex-row items-center bg-[#23234a] rounded-2xl p-3 m-4 border border-[#2d2d3a]">
+                      <TextInput
+                        value={dmDraft}
+                        onChangeText={setDmDraft}
+                        placeholder="Type a message..."
+                        placeholderTextColor="#7a8b99"
+                        className="text-white flex-1 text-xs"
+                        style={{ minHeight: 32 }}
+                      />
+                      <TouchableOpacity className="ml-2 bg-[#4BB38A] px-4 py-2 rounded-xl shadow" onPress={handleSendDm}>
+                        <Text className="text-white text-xs font-semibold">Send</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              </View>
             )}
-          </LinearGradient>
-        </ScrollView>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );
